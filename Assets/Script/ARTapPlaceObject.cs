@@ -7,17 +7,23 @@ using UnityEngine.XR.ARSubsystems;
 public class ARTapPlaceObject : MonoBehaviour
 {
 
-    public GameObject objectToPlace;
+    public GameObject footBallPrefab;
+    public GameObject goalPrefab;
+    private GameObject spawnedBall;
+    private GameObject spawnedGoal;
     public GameObject placementIndicator;
     private XROrigin xrOrigin;
     private ARRaycastManager raycastManager;
     private Pose placementPose;
     private bool isPlaced = false;
+    private bool hasSpawnedObject = false;
+    private Vector2 startTouch;
+    private Vector2 endTouch;
 
     void Start()
     {
         xrOrigin = FindFirstObjectByType<XROrigin>();
-        raycastManager = FindObjectOfType<ARRaycastManager>();
+        raycastManager = FindFirstObjectByType<ARRaycastManager>();
         
     }
 
@@ -27,18 +33,55 @@ public class ARTapPlaceObject : MonoBehaviour
         UpdatePlacementPose();
         UpdatePlacementIndicator();
 
-        if (isPlaced && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (!hasSpawnedObject && isPlaced && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
             PlaceObject();
+        }
+
+        if (spawnedBall != null && Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                startTouch = touch.position;
+            }
+            else if (touch.phase == TouchPhase.Ended)
+            {
+                endTouch = touch.position;
+                KickBall();
+            }
         }
 
     }
 
     void PlaceObject()
     {
-        Instantiate(objectToPlace, placementPose.position, placementPose.rotation);
+        // For the FootBall
+        spawnedBall = Instantiate(footBallPrefab, placementIndicator.transform.position, footBallPrefab.transform.rotation);
+
+        // For the GoalNet
+        Vector3 goalPosition = placementPose.position + placementPose.forward * 4f;
+        spawnedGoal = Instantiate(goalPrefab, goalPosition, Quaternion.LookRotation(new Vector3(90,0,0)));
+
+        hasSpawnedObject = true;
  
     }
+    void KickBall()
+    {
+        Vector2 swipe = endTouch - startTouch;
+        Vector3 swipeDirection = new Vector3(swipe.x, swipe.y, 1).normalized;
+
+        Rigidbody rb = spawnedBall.GetComponent<Rigidbody>();
+
+        if (rb != null)
+        {
+            float force = 8f;
+            rb.AddForce(Camera.main.transform.TransformDirection(swipeDirection) * force, ForceMode.Impulse);
+        }
+        
+    }
+
 
     void UpdatePlacementPose(){
         var screenCenter = Camera.main.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));

@@ -597,7 +597,7 @@ MonoBehaviour:
   <trackablesChanged>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
-  m_PlanePrefab: {fileID: 0}
+  m_PlanePrefab: {fileID: 8166934147536007617, guid: 96f4b22c712d49c42b7fcb5d3ce7409c, type: 3}
   m_DetectionMode: -1
 --- !u!1 &832575517
 GameObject:
@@ -801,7 +801,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eac6b6a3072a2aa4fa0a7d54c6c62544, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToPlace: {fileID: 2087994361853898889, guid: da37a681ae28b504f990d24ecf9ca1f9, type: 3}
+  footBallPrefab: {fileID: 6419839099551016683, guid: d23c69b8fef95824ab452cdd37374e53, type: 3}
+  goalPrefab: {fileID: 4888488964766454162, guid: a8316b87e965b8d4d9d944822a677da6, type: 3}
   placementIndicator: {fileID: 1358725442}
 --- !u!4 &1798195254
 Transform:
