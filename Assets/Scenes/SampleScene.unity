@@ -782,6 +782,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1798195254}
   - component: {fileID: 1798195253}
+  - component: {fileID: 1798195255}
   m_Layer: 0
   m_Name: Interaction
   m_TagString: Untagged
@@ -804,6 +805,7 @@ MonoBehaviour:
   footBallPrefab: {fileID: 6419839099551016683, guid: d23c69b8fef95824ab452cdd37374e53, type: 3}
   goalPrefab: {fileID: 4888488964766454162, guid: a8316b87e965b8d4d9d944822a677da6, type: 3}
   placementIndicator: {fileID: 1358725442}
+  plane: {fileID: 6207923757608611503, guid: 86b9504a6ca27a04195f775d2fd1684b, type: 3}
 --- !u!4 &1798195254
 Transform:
   m_ObjectHideFlags: 0
@@ -819,6 +821,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1798195255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1798195252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a5d3b63f51adef4f8ac0fe320889c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footBallPrefab: {fileID: 6419839099551016683, guid: d23c69b8fef95824ab452cdd37374e53, type: 3}
+  footBall: []
 --- !u!1 &2040929565
 GameObject:
   m_ObjectHideFlags: 0

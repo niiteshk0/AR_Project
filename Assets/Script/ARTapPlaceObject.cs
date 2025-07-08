@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.XR.CoreUtils;
@@ -12,11 +13,12 @@ public class ARTapPlaceObject : MonoBehaviour
     private GameObject spawnedBall;
     private GameObject spawnedGoal;
     public GameObject placementIndicator;
+    public GameObject plane;
     private XROrigin xrOrigin;
     private ARRaycastManager raycastManager;
     private Pose placementPose;
     private bool isPlaced = false;
-    private bool hasSpawnedObject = false;
+    private bool hasSpawnedGoal = false;
     private Vector2 startTouch;
     private Vector2 endTouch;
 
@@ -24,6 +26,11 @@ public class ARTapPlaceObject : MonoBehaviour
     {
         xrOrigin = FindFirstObjectByType<XROrigin>();
         raycastManager = FindFirstObjectByType<ARRaycastManager>();
+
+        // For the Physics plane
+        GameObject planePhysics = Instantiate(plane, placementIndicator.transform.position, plane.transform.rotation);
+        planePhysics.transform.position = new Vector3(0, -0.1f, 0);
+        planePhysics.transform.localScale = new Vector3(10, 0, 10);
         
     }
 
@@ -33,7 +40,7 @@ public class ARTapPlaceObject : MonoBehaviour
         UpdatePlacementPose();
         UpdatePlacementIndicator();
 
-        if (!hasSpawnedObject && isPlaced && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        if (isPlaced && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
         {
             PlaceObject();
         }
@@ -57,15 +64,23 @@ public class ARTapPlaceObject : MonoBehaviour
 
     void PlaceObject()
     {
-        // For the FootBall
-        spawnedBall = Instantiate(footBallPrefab, placementIndicator.transform.position, footBallPrefab.transform.rotation);
 
-        // For the GoalNet
-        Vector3 goalPosition = placementPose.position + placementPose.forward * 4f;
-        spawnedGoal = Instantiate(goalPrefab, goalPosition, Quaternion.LookRotation(new Vector3(90,0,0)));
+        // For the FootBall 
+        spawnedBall = GetComponent<BallSpawner>().GetBall();
+        spawnedBall.SetActive(true);
+        spawnedBall.transform.position = placementIndicator.transform.position;
+        // spawnedBall = Instantiate(footBallPrefab, placementIndicator.transform.position, footBallPrefab.transform.rotation);
 
-        hasSpawnedObject = true;
- 
+
+        if (!hasSpawnedGoal)
+        {
+            // For the GoalNet
+            Vector3 goalPosition = placementPose.position + placementPose.forward * 4f;
+            spawnedGoal = Instantiate(goalPrefab, goalPosition, placementIndicator.transform.rotation);
+            spawnedGoal.transform.localRotation = Quaternion.Euler(90, 0, 0);
+        }
+
+        hasSpawnedGoal = true;
     }
     void KickBall()
     {
@@ -79,7 +94,18 @@ public class ARTapPlaceObject : MonoBehaviour
             float force = 8f;
             rb.AddForce(Camera.main.transform.TransformDirection(swipeDirection) * force, ForceMode.Impulse);
         }
-        
+        StartCoroutine(DeactivateAfterTime(spawnedBall, 4f));
+    }
+
+    IEnumerator DeactivateAfterTime(GameObject ball, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+         if (ball.activeInHierarchy)
+        {
+            ball.SetActive(false);
+        }
+
     }
 
 
