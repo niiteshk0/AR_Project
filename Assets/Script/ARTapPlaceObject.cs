@@ -22,7 +22,7 @@ public class ARTapPlaceObject : MonoBehaviour
     private bool hasSpawnedGoal = false;
     private Vector2 startTouch;
     private Vector2 endTouch;
-    
+
     void Start()
     {
         xrOrigin = FindFirstObjectByType<XROrigin>();
@@ -31,7 +31,7 @@ public class ARTapPlaceObject : MonoBehaviour
         // For the Physics plane
         GameObject planePhysics = Instantiate(plane, placementIndicator.transform.position, plane.transform.rotation);
         planePhysics.transform.position = new Vector3(placementIndicator.transform.position.x, -0.1f, placementIndicator.transform.position.z);
-        planePhysics.transform.localScale = new Vector3(10, 0, 10);
+        planePhysics.transform.localScale = new Vector3(10, 0, 10);    
         
     }
 
@@ -53,10 +53,12 @@ public class ARTapPlaceObject : MonoBehaviour
             if (touch.phase == TouchPhase.Began)
             {
                 startTouch = touch.position;
+                
             }
             else if (touch.phase == TouchPhase.Ended)
             {
                 endTouch = touch.position;
+
                 KickBall();
             }
         }
@@ -76,17 +78,23 @@ public class ARTapPlaceObject : MonoBehaviour
 
         if (!hasSpawnedGoal)
         {
-            // For the GoalNet
-            Vector3 goalPosition = placementPose.position + placementPose.forward * 3f;
 
-            Vector3 cameraPos = xrOrigin.Camera.transform.position;
+            Vector3 cameraForward = xrOrigin.Camera.transform.forward;
+            cameraForward.y = 0; // Flatten it to ground
+            cameraForward.Normalize();
 
-            Vector3 directionToCamera = ( cameraPos- goalPosition).normalized;
-            // directionToCamera.y = 0;
+            // Goal position 3 meters in front of camera
+            Vector3 goalPosition = placementPose.position + cameraForward * 3f;
 
-            Quaternion goalRotation = Quaternion.LookRotation(directionToCamera);
-            spawnedGoal = Instantiate(goalPrefab, goalPosition, goalPrefab.transform.rotation);
+            // Goal looks back at the camera (your current view)
+            Vector3 cameraPosition = xrOrigin.Camera.transform.position;
+            cameraPosition.y = goalPosition.y; // keep rotation horizontal
+
+            Quaternion goalRotation = Quaternion.LookRotation(cameraPosition - goalPosition);
+
+            spawnedGoal = Instantiate(goalPrefab, goalPosition, goalRotation);
         }
+
 
         hasSpawnedGoal = true;
     }
