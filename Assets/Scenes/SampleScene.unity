@@ -803,7 +803,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   footBallPrefab: {fileID: 6419839099551016683, guid: d23c69b8fef95824ab452cdd37374e53, type: 3}
-  goalPrefab: {fileID: 4888488964766454162, guid: a8316b87e965b8d4d9d944822a677da6, type: 3}
+  goalPrefab: {fileID: 8365308715427988758, guid: 09db2ba72f9642f499bfe5f93c82f509, type: 3}
   plane: {fileID: 6207923757608611503, guid: 86b9504a6ca27a04195f775d2fd1684b, type: 3}
   placementIndicator: {fileID: 1358725442}
   force: 3
